@@ -6,13 +6,14 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.data.domain.Persistable;
 
 @Entity
 @Table(name = "informacion_publica")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class InformacionPublica {
+public class InformacionPublica implements Persistable<Integer> {
 
     @Id
     @Column(name = "id_usuario")
@@ -36,4 +37,18 @@ public class InformacionPublica {
 
     @Column(name = "valoracion", nullable = false)
     private double valoracion;
+
+    @Transient
+    private boolean isNew = true;
+
+    @Override
+    public boolean isNew() {
+        return isNew;
+    }
+
+    @PostLoad
+    @PostPersist
+    void markNotNew() {
+        this.isNew = false;
+    }
 }

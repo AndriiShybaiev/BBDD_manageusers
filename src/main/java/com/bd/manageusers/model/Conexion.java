@@ -6,13 +6,14 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.data.domain.Persistable;
 
 @Entity
 @Table(name = "conexion")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Conexion {
+public class Conexion implements Persistable<ConexionId> {
 
     @EmbeddedId
     private ConexionId id;
@@ -23,4 +24,24 @@ public class Conexion {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Usuario usuario;
+
+    @Transient
+    private boolean isNew = true;
+
+    @Override
+    public boolean isNew() {
+        return isNew;
+    }
+
+    @PostLoad
+    @PostPersist
+    void markNotNew() {
+        this.isNew = false;
+    }
+
+    public Conexion(ConexionId id, Usuario usuario) {
+        this.id = id;
+        this.usuario = usuario;
+        this.isNew = true;
+    }
 }
