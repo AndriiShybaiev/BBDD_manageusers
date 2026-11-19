@@ -7,8 +7,10 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.util.Date;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -38,15 +40,24 @@ public class Usuario {
     @Column(name = "apellidos", nullable = false, length = 75)
     private String apellidos;
 
-    @Temporal(TemporalType.DATE)
     @Column(name = "nacido", nullable = false)
-    private Date nacido;
+    private LocalDate nacido;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_perfil")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Perfil perfil;
+
+    @OneToOne(mappedBy = "usuario")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private InformacionPublica informacionPublica;
+
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<Conexion> conexiones = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
