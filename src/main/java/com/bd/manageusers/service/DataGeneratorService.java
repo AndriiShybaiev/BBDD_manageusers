@@ -15,6 +15,7 @@ import org.ajbrown.namemachine.NameGenerator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -69,7 +70,7 @@ public class DataGeneratorService {
             Perfil perfil = perfilRepository.findById(perfilId)
                     .orElseThrow(() -> new IllegalStateException("Perfil no encontrado con ID: " + perfilId));
             user.setPerfil(perfil);
-            user.setNacido(new Date(-946771200000L + (Math.abs(rnd.nextLong()) % (70L * 365 * 24 * 60 * 60 * 1000))));
+            user.setNacido(LocalDate.of(1950, 1, 1).plusDays(rnd.nextInt(25000)));
 
             user = usuarioRepository.save(user);
             createdUserIds.add(user.getId());
