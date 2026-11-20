@@ -1,8 +1,10 @@
 package com.bd.manageusers.repository;
 
 import com.bd.manageusers.model.Usuario;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -23,4 +25,19 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
         ORDER BY COUNT(c.momento_entrada) DESC
         """, nativeQuery = true)
     List<Object[]> findUsuariosEstandarBajaValoracionConConexionesNative();
+
+    // Prueba 2 - Variante HQL
+    @Query("SELECT u FROM Usuario u WHERE u.id BETWEEN :min AND :max")
+    List<Usuario> findByIdEntreHQL(@Param("min") int min, @Param("max") int max);
+
+    // Prueba 2 - Variante Derivada
+    List<Usuario> findByIdBetween(int min, int max);
+
+    // Prueba 2 - Variante JOIN FETCH
+    @Query("SELECT DISTINCT u FROM Usuario u LEFT JOIN FETCH u.conexiones WHERE u.id BETWEEN :min AND :max")
+    List<Usuario> findByIdEntreJoinFetch(@Param("min") int min, @Param("max") int max);
+
+    // Prueba 2 - Variante EntityGraph
+    @EntityGraph(attributePaths = {"conexiones"})
+    List<Usuario> findWithGraphByIdBetween(int min, int max);
 }
